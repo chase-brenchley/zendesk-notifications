@@ -18,6 +18,8 @@ with open('pushbullet.txt') as f:
 	pushbullet, phone = f.read().splitlines()
 
 payload = {'type':'note', 'title':'Queue Change', 'body':'A change in the queue has been detected'}
+if args.silent: payload['title'] = 'Silent Queue Change'
+
 header = {'Access-token':pushbullet, 'Content-Type':'application/json'}
 
 current_state = set()
