@@ -12,7 +12,8 @@ parse.add_argument('--own', '-o', help='only notifies when my own or new tickets
 args = parse.parse_args()
 
 with open('apitoken.txt') as f:
-	token, email, url = f.read().splitlines()
+	token, email, url, my_id = f.read().splitlines()
+	my_id = int(my_id)
 
 with open('pushbullet.txt') as f:
 	pushbullet, phone = f.read().splitlines()
@@ -27,8 +28,10 @@ current_state = set()
 while True:
 	r = requests.get(url+'search.json?query=type:ticket priority>low group_id:20349363 brand_id:3275876 status<=open', auth=HTTPBasicAuth(email,token))
 
+	if args.verbose: print(f'request returned with {r.text}')
+
 	try:
-		results = set([ticket['id'] for ticket in r.json()['results']])
+		results = set([ticket['id'] for ticket in r.json()['results']]) if not args.own else set([ticket['id'] for ticket in r.json()['results'] if ticket['assignee_id'] == my_id or ticket['assignee_id'] == None])
 	except KeyError as e:
 		raise e
 	
