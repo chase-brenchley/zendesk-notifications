@@ -2,8 +2,14 @@ import json
 import time
 import pdb
 import requests
+import argparse
 from requests.auth import HTTPBasicAuth
 
+parse = argparse.ArgumentParser(description='Sends zendesk notifications to your phone.')
+parse.add_argument('--silent', '-s', help='stops phone TTS', action='store_true')
+parse.add_argument('--verbose', '-v', help='prints helpful messages', action='store_true')
+parse.add_argument('--own', '-o', help='only notifies when my own or new tickets come in', action='store_true')
+args = parse.parse_args()
 
 with open('apitoken.txt') as f:
 	token, email, url = f.read().splitlines()
